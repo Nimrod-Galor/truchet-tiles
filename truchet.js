@@ -1,4 +1,4 @@
-var fps = 20;
+var fps = 2;
 var now;
 var then = Date.now();
 var interval = 1000/fps;
@@ -7,7 +7,8 @@ var width;
 var height;
 var context;
 var agents = [];
-var tileSize = 25;
+var tileSize = 130;
+var currenrChangeIndex = 0;
 
 window.addEventListener('resize', initScene);
 window.addEventListener('load', initScene);
@@ -27,6 +28,7 @@ console.log("agentNum: " + agentNum);
         agents.push(randomRange(1,5));
     }
 
+    
     animate();
 }
 
@@ -35,12 +37,15 @@ function randomRange(min, max){
 }
 
 const animate = () => {
-  /*  now = Date.now();
+    now = Date.now();
     delta = now - then;
     
     if (delta > interval) {
         then = now - (delta % interval);
-*/
+
+        context.fillStyle = 'white';
+        context.fillRect(0, 0, width, height);
+
         let cols = Math.ceil(width / tileSize);
         numCells = cols * Math.ceil(height / tileSize);
         for(let i=0; i<numCells;i++){
@@ -97,25 +102,34 @@ const animate = () => {
                 context.arc(0, tileSize, tileSize * 0.5, 1.5 * Math.PI, 2 * Math.PI);
                 context.stroke();
                 context.beginPath();
-                context.arc(tileSize, 0, tileSize * 0.5, 1.5, 1.0 * Math.PI);                
+                context.arc(tileSize, 0, tileSize * 0.5, 1.5, 1 * Math.PI);                
                 context.stroke();
             }
             context.restore();
         }
-  //  }
+
+
+        // randomiz change
+        let numOfChange = 1;//Math.round(numCells * 0.005);
+        console.log("numOfChange: " + numOfChange);
+        let changeIndex;
+        let changeType;
+        for(let c =0 ; c < numOfChange; c++){
+            changeIndex = Math.round(randomRange(0, numCells));
+            changeType = Math.floor(randomRange(1, 5));
+            agents[changeIndex] = changeType;
+
+            console.log("changeIndex: " + changeIndex + "\tchangeType: " + changeType + "\tagents[changeIndex]: " + agents[changeIndex]);
+        }
+
+
+        /*agents[currenrChangeIndex++] = Math.floor(randomRange(1, 5));
+
+        if(currenrChangeIndex >= numCells){
+            currenrChangeIndex = 0;
+        }*/
+    }
 console.log("animate END!");
-   // requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 }
 
-function renderTile(index){
-   // console.log(index);
-    if(index < 2){
-            console.log("IN");
-            context.beginPath();
-            context.moveTo(-7.5, 0);
-            context.lineTo(7.5, 0);
-            context.moveTo(0,-7.5);
-            context.lineTo(0, 7.5);
-            context.stroke();
-    }
-}
